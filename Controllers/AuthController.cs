@@ -17,55 +17,50 @@ namespace ECartApp.Controllers
             _myCartDb = myCartDb;
             _config = confing;
         }
-      
+
         public async Task<IActionResult> Login(LoginDto login)
         {
-            // 1. Basic Validation
             if (string.IsNullOrEmpty(login.Email) || string.IsNullOrEmpty(login.Password))
             {
                 ViewBag.Message = "Email and Password are required.";
                 return View();
             }
 
-            // 2. Fetch the user from the database
-            // We use 'await' here so the thread can do other work while the DB searches
-            var user = await _myCartDb.register.FirstOrDefaultAsync(e => e.Email == login.Email);
+            var user = await _myCartDb.users.FirstOrDefaultAsync(e => e.Email == login.Email);
 
-            // 3. Logic Check: Does the user exist?
             if (user == null)
             {
                 ViewBag.Message = "User not registered. Please register first.";
                 return View();
             }
-
-            // 4. Logic Check: Does the password match?
-            // Note: In a real app, you would use a password hasher here
             if (user.Password != login.Password)
             {
                 ViewBag.Message = "Invalid email or password.";
                 return View();
             }
 
-            // 5. Success! Generate the JWT Token
             var generator = new JwtTokenGenrator(_config);
             string token = generator.GenerateToken(user.Email);
+            CookieOptions option = new CookieOptions();
+            option.HttpOnly = true;
+            option.Expires = DateTime.Now.AddMinutes(60);
+            Response.Cookies.Append("JWToken", token, option);
 
-            // 6. Handle the Token
-            // In MVC, you might pass it to a View or save it in a Cookie
+            HttpContext.Session.SetString("JWToken", token);
             ViewBag.Token = token;
             ViewBag.Message = "Login Successful!";
-
-            return View();
+            TempData["UserId"] = user.Id;
+            return RedirectToAction("Deskboard", "Deskboard");
         }
 
-        public async Task<IActionResult> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register(UserDto registerDto)
         {
             if (!string.IsNullOrEmpty(registerDto.FirstName) && !string.IsNullOrEmpty(registerDto.LastName) &&  !string.IsNullOrEmpty(registerDto.Email) && !string.IsNullOrEmpty(registerDto.Password))
             {
-                var user = _myCartDb.register.FirstOrDefault(r=>r.Email == registerDto.Email);
+                var user = _myCartDb.users.FirstOrDefault(r=>r.Email == registerDto.Email);
                 if (user == null)
                 {
-                    Register reg = new Register()
+                    User reg = new User()
                     { 
                         FirstName = registerDto.FirstName,
                         MiddleName = registerDto.MiddleName,
@@ -76,7 +71,13 @@ namespace ECartApp.Controllers
 
                     await _myCartDb.AddAsync(reg);
                     await _myCartDb.SaveChangesAsync();
-                    TempData["Message"] = "Registration Sucessfull";
+                    UserProfile userProfile = new UserProfile()
+                    {
+                        UserId = reg.Id,
+                    };
+                    await _myCartDb.AddAsync(userProfile);
+                    await _myCartDb.SaveChangesAsync();
+                    TempData["Message"] = "Registration Successful";
                     return RedirectToAction("Login");
                 }
                 else

@@ -4,6 +4,7 @@ using ECartApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECartApp.Migrations
 {
     [DbContext(typeof(MyCartDbContext))]
-    partial class MyCartDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260413053603_userprofile")]
+    partial class userprofile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,7 +148,7 @@ namespace ECartApp.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("ECartApp.Models.UserAddresses", b =>
+            modelBuilder.Entity("ECartApp.Models.UserProfile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,44 +159,11 @@ namespace ECartApp.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AddressType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlternateNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("District")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PinCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("userAddresses");
-                });
-
-            modelBuilder.Entity("ECartApp.Models.UserProfile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("Dob")
                         .HasColumnType("date");
@@ -205,6 +175,12 @@ namespace ECartApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PinCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
@@ -233,17 +209,6 @@ namespace ECartApp.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("ECartApp.Models.UserAddresses", b =>
-                {
-                    b.HasOne("ECartApp.Models.User", "user")
-                        .WithMany("UserAddresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
-                });
-
             modelBuilder.Entity("ECartApp.Models.UserProfile", b =>
                 {
                     b.HasOne("ECartApp.Models.User", "User")
@@ -267,8 +232,6 @@ namespace ECartApp.Migrations
 
             modelBuilder.Entity("ECartApp.Models.User", b =>
                 {
-                    b.Navigation("UserAddresses");
-
                     b.Navigation("UserProfile");
                 });
 #pragma warning restore 612, 618

@@ -26,6 +26,7 @@ namespace ECartApp.Controllers
                 //Color = p.Color
             })
             .ToListAsync();
+            ViewBag.UserId = TempData["UserId"];
             return View(products);
         }
     }

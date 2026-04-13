@@ -4,6 +4,7 @@ using ECartApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECartApp.Migrations
 {
     [DbContext(typeof(MyCartDbContext))]
-    partial class MyCartDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260412175607_IntitialDb")]
+    partial class IntitialDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,7 +148,7 @@ namespace ECartApp.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("ECartApp.Models.UserAddresses", b =>
+            modelBuilder.Entity("ECartApp.Models.UserProfile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,19 +159,22 @@ namespace ECartApp.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AddressType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlternateNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContactNumber")
+                    b.Property<string>("District")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("District")
+                    b.Property<DateOnly>("Dob")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PinCode")
@@ -183,37 +189,6 @@ namespace ECartApp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.ToTable("userAddresses");
-                });
-
-            modelBuilder.Entity("ECartApp.Models.UserProfile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly>("Dob")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Photo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("userProfiles");
                 });
@@ -233,22 +208,11 @@ namespace ECartApp.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("ECartApp.Models.UserAddresses", b =>
-                {
-                    b.HasOne("ECartApp.Models.User", "user")
-                        .WithMany("UserAddresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
-                });
-
             modelBuilder.Entity("ECartApp.Models.UserProfile", b =>
                 {
                     b.HasOne("ECartApp.Models.User", "User")
-                        .WithOne("UserProfile")
-                        .HasForeignKey("ECartApp.Models.UserProfile", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -263,13 +227,6 @@ namespace ECartApp.Migrations
             modelBuilder.Entity("ECartApp.Models.ProductType", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("ECartApp.Models.User", b =>
-                {
-                    b.Navigation("UserAddresses");
-
-                    b.Navigation("UserProfile");
                 });
 #pragma warning restore 612, 618
         }

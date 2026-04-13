@@ -14,7 +14,6 @@ namespace ECartApp.Service
             _config = config;
         }
 
-
         public string GenerateToken(string username)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

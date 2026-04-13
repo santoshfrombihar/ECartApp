@@ -189,6 +189,14 @@
     font-weight: 500;
 }
 
+/* The parent wrapper */
+.avatar-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Your avatar styles */
 .avatar {
     width: 28px;
     height: 28px;
@@ -199,8 +207,47 @@
     font-size: 0.7rem;
     font-weight: 700;
     margin-right: 6px;
+    background-color: dimgrey;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
+.avatar-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -20px;
+    margin-top: 1px;
+    background-color: #ffffff;
+    min-width: 120px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid #ddd;
+    z-index: 1000;
+    padding: 5px 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.avatar-container:hover .avatar-dropdown {
+    display: block;
+}
+
+.avatar-container:hover .avatar {
+    background-color: black;
+}
+
+.avatar-dropdown a {
+    display: block;
+    padding: 8px 15px;
+    color: #333 !important; 
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.avatar-dropdown a:hover {
+    background-color: #f1f1f1;
+}
 .donut-wrap {
     position: relative;
     display: flex;
@@ -263,10 +310,7 @@
 }
 
 .product-card {
-    width: 320px;
-    position: relative;
     box-shadow: 0 2px 7px #dfdfdf;
-    margin: 20px;
     background: #fafafa;
     border-radius: 15px;
     overflow: hidden;
