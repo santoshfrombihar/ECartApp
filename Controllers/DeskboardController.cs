@@ -21,12 +21,15 @@ namespace ECartApp.Controllers
         {
             // Get UserId from claims
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            if(int.TryParse(userIdClaim.Value, out int userId))
             {
-                return RedirectToAction("Login", "Auth");
+                ViewBag.UserId = userId;
             }
-
-            ViewBag.UserId = userId;
+            
+            var userCartProductIds = await _context.carts
+                .Where(c => c.UserId == userId)
+                .SelectMany(c => c.CartItems.Select(ci => ci.ProductId))
+                .ToListAsync();
 
             var products = await _context.products
                 .Select(p => new ProductDto
@@ -35,9 +38,17 @@ namespace ECartApp.Controllers
                     ProductName = p.ProductName,
                     ProductDescription = p.ProductDescription,
                     Price = p.Price,
-                    ProductImage = p.ProductImage
+                    ProductImage = p.ProductImage,
+                    IsProductInCart = userCartProductIds.Contains(p.Id)
                 })
                 .ToListAsync();
+
+
+            var distinctProductsCount = await _context.cartItems
+                .Where(ci => ci.Cart.UserId == userId)
+                .CountAsync();
+
+            ViewBag.CartCount = distinctProductsCount;
 
             return View(products);
         }

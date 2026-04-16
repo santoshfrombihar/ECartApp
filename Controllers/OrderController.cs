@@ -17,11 +17,14 @@ namespace ECartApp.Controllers
             _context = context;
         }
 
-        public IActionResult OrderDetails()
+        [HttpGet]
+        public IActionResult OrderDetails(int userId)
         {
+            var products = _context.products.Select(p.);
             return View();
         }
 
+        
         public async Task<IActionResult> AddToCart(int productId)
         {
             // Get UserId from claims
@@ -58,11 +61,6 @@ namespace ECartApp.Controllers
                 await _context.cartItems.AddAsync(cartItem);
             }
 
-            var distinctProductsCount = await _context.cartItems
-                .Where(ci => ci.Cart.UserId == userId)
-                .CountAsync();
-
-            TempData["cartCount"] = distinctProductsCount;
             await _context.SaveChangesAsync();
             return RedirectToAction("Deskboard", "Deskboard");
         }

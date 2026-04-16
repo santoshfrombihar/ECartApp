@@ -9,6 +9,7 @@ namespace ECartApp.DTO_s
         public string? ProductDescription { get; set; }
         public string? ProductImage { get; set; }
         public decimal? Price { get; set; }
+        public bool IsProductInCart { get; set; }
         public ProductType? Type { get; set; }
         public ProductColor? Color { get; set; }
     }

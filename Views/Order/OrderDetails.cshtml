@@ -82,6 +82,62 @@
                     </div>
                 </div>
 
+                <!-- Carts Items -->
+                <div class="card-box">
+                    <h6><i class="bi bi-bag" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Order items (3)</h6>
+                    <div class="product-line">
+                        <div class="prod-img">📱</div>
+                        <div class="flex-grow-1">
+                            <div class="prod-name">Redmi Note 13 Pro (8GB/256GB)</div>
+                            <div class="prod-meta">Color: Midnight Black &nbsp;|&nbsp; Seller: TechZone</div>
+                            <div class="qty-ctrl mt-2">
+                                <button class="qty-btn" onclick="changeQty('q1',-1)">-</button>
+                                <span class="qty-val" id="q1">1</span>
+                                <button class="qty-btn" onclick="changeQty('q1',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p1">₹18,499</div>
+                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹22,999</div>
+                            <button class="del-btn mt-1" onclick="removeItem('item1')"><i class="bi bi-trash3"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-line" id="item2">
+                        <div class="prod-img">🎧</div>
+                        <div class="flex-grow-1">
+                            <div class="prod-name">Noise Earbuds Pro X</div>
+                            <div class="prod-meta">Color: White &nbsp;|&nbsp; Seller: AudioWorld</div>
+                            <div class="qty-ctrl mt-2">
+                                <button class="qty-btn" onclick="changeQty('q2',-1)">-</button>
+                                <span class="qty-val" id="q2">1</span>
+                                <button class="qty-btn" onclick="changeQty('q2',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p2">₹2,499</div>
+                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹3,999</div>
+                            <button class="del-btn mt-1" onclick="removeItem('item2')"><i class="bi bi-trash3"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-line" id="item3">
+                        <div class="prod-img">👟</div>
+                        <div class="flex-grow-1">
+                            <div class="prod-name">Nike Air Max 270 (Size 9)</div>
+                            <div class="prod-meta">Color: Black/White &nbsp;|&nbsp; Seller: SportsHub</div>
+                            <div class="qty-ctrl mt-2">
+                                <button class="qty-btn" onclick="changeQty('q3',-1)">-</button>
+                                <span class="qty-val" id="q3">1</span>
+                                <button class="qty-btn" onclick="changeQty('q3',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p3">₹8,995</div>
+                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹10,995</div>
+                            <button class="del-btn mt-1" onclick="removeItem('item3')"><i class="bi bi-trash3"></i></button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Delivery Address -->
                 <div class="card-box">
                     <h6><i class="bi bi-geo-alt" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Delivery address</h6>
