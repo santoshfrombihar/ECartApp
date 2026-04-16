@@ -11,6 +11,8 @@ namespace ECartApp.Models
         public DbSet<ProductType> productsType { get; set; }
         public DbSet<UserProfile> userProfiles { get; set; }
         public DbSet<UserAddresses> userAddresses { get; set; }
+        public DbSet<Cart> carts { get; set; }
+        public DbSet<CartItem> cartItems { get; set; }
         public MyCartDbContext(DbContextOptions<MyCartDbContext> options) : base(options)
         {
 

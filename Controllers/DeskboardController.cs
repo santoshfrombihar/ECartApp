@@ -1,32 +1,44 @@
 ﻿using ECartApp.DTO_s;
 using ECartApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ECartApp.Controllers
 {
+    [Authorize]
     public class DeskboardController : Controller
     {
-        private readonly MyCartDbContext _myCartDb;
-        public DeskboardController(MyCartDbContext myCartDb)
+        private readonly MyCartDbContext _context;
+
+        public DeskboardController(MyCartDbContext context)
         {
-            _myCartDb = myCartDb;
+            _context = context;
         }
+
         public async Task<IActionResult> Deskboard()
         {
-            var products = await _myCartDb.products
-            .Select(p => new ProductDto
+            // Get UserId from claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             {
-                Id = p.Id,
-                ProductName = p.ProductName,
-                ProductDescription = p.ProductDescription,
-                ProductImage = p.ProductImage,
-                Price = p.Price,
-                //Type = p.Type,
-                //Color = p.Color
-            })
-            .ToListAsync();
-            ViewBag.UserId = TempData["UserId"];
+                return RedirectToAction("Login", "Auth");
+            }
+
+            ViewBag.UserId = userId;
+
+            var products = await _context.products
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    ProductName = p.ProductName,
+                    ProductDescription = p.ProductDescription,
+                    Price = p.Price,
+                    ProductImage = p.ProductImage
+                })
+                .ToListAsync();
+
             return View(products);
         }
     }

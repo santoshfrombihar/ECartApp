@@ -35,9 +35,14 @@
             <div class="d-flex align-items-center gap-3">
                 <input class="search-box" type="text" placeholder="&#x1F50D;  Search orders, products...">
                 <div class="position-relative" style="cursor:pointer;">
-                    <i class="bi bi-bell" style="font-size:1.2rem;color:#4a5272;"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">5</span>
+                    <i class="bi bi-cart" style="font-size:1.2rem;color:#4a5272;">@ViewBag.CartCount </i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;"></span>
                 </div>
+                <div class="position-relative" style="cursor:pointer;">
+                    <i class="bi bi-bell" style="font-size:1.2rem;color:#4a5272;"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;"></span>
+                </div>
+               
                 <div class="avatar-container">
                     <div class="avatar">SA</div>
                     <div class="avatar-dropdown">
@@ -75,8 +80,8 @@
                     <div class="product-bottom-details">
                         <div class="product-price"><small>$99.00</small>@item.Price</div>
                         <div class="product-links">
-                            <button class="btn-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
-                            <button class="btn-buy">Buy Now</button>
+                                <button class="btn-cart"  onclick="location.href='/Order/AddToCart?userId=@ViewBag.UserId&productid=@item.Id'"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                                <button class="btn-buy" onclick="location.href='/Order/OrderDetails'">Buy Now</button>
                         </div>
                     </div>
                 </div>

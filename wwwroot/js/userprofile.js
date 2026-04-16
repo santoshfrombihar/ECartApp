@@ -26,3 +26,10 @@
         });
         });
     });
+
+
+document.getElementById('photoInput').onchange = function () {
+    // Optional: You can add a loading spinner here
+    document.getElementById('photoForm').submit();
+};
+

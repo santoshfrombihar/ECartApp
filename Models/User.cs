@@ -20,8 +20,8 @@ namespace ECartApp.Models
 
         [Required]
         public string? Password { get; set; }
+        public string Role { get; set; } = "Customer";
         public UserProfile? UserProfile { get; set; }
-
         public List<UserAddresses>? UserAddresses { get; set; }
     }
 }

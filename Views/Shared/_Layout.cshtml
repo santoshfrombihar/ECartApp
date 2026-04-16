@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/ECartApp.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/deskboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/userprofile.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/orderdetails.css" asp-append-version="true" />
 </head>
 <body>
     <div class="container">
@@ -19,11 +20,40 @@
             @RenderBody()
         </main>
     </div>
+    <div class="avatar-container">
+        <div class="avatar">
+            @if (User?.Identity?.IsAuthenticated == true)
+            {
+                @(User?.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value is string name && name.Length >= 2
+                ? name.Substring(0, 2).ToUpper()
+                : "U")
+            }
+            else
+            {
+                <span>SA</span>
+            }
+        </div>
+        <div class="avatar-dropdown">
+            @if (User?.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="userprofile" asp-action="userprofile" 
+                   asp-route-userId="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value">Profile</a>
+                <form method="post" asp-controller="Auth" asp-action="Logout" style="display:inline;">
+                    <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;text-align:left;color:#4a5272;">Sign Out</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login">Sign In</a>
+            }
+        </div>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/desktop.js" asp-append-version="true"></script>
     <script src="~/js/userprofile.js" asp-append-version="true"></script>
+    <script src="~/js/orderdetails.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,33 +1,49 @@
 ﻿@model Login
-<div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card shadow p-4" style="width: 350px;">
-            <h3 class="text-center mb-4">Login sdsds</h3>
-            <p>@ViewBag.Message</p>
-            <form method="post" asp-action="Login">
-                <div class="mb-3">
-                    <label class="form-label">Email address</label>
-                    <input type="email" asp-for="Email" class="form-control" placeholder="Enter email">
-                </div>
+@{
+    ViewData["Title"] = "Login";
+}
 
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" asp-for="Password" class="form-control" placeholder="Enter password">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Login to ShopPulse</h4>
                 </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(ViewBag.Message))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @ViewBag.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
 
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input">
-                    <label class="form-check-label">Remember me</label>
-                </div>
+                    <form method="post" asp-action="Login">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" asp-for="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" asp-for="Password" required>
+                        </div>
 
-                <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input">
+                            <label class="form-check-label">Remember me</label>
+                        </div>
 
-                <div class="text-center mt-3">
-                    <a href="#">Forgot password?</a>
-        
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                    <hr>
+                    <p class="text-center">Don't have an account? <a asp-controller="Auth" asp-action="Register">Register here</a></p>
                 </div>
-                <div>
-                   <a asp-controller="Auth" asp-action="Register">New User?</a>
-                </div>
-            </form>
+            </div>
         </div>
+    </div>
 </div>
