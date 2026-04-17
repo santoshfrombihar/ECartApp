@@ -1,4 +1,7 @@
-﻿<div class="page-wrap">
+﻿@using ECartApp.DTO_s
+@model OrderDetailsDto
+
+<div class="page-wrap">
     <!-- Nav -->
     <div class="topnav">
         <div class="brand">SHOP<span>PULSE</span></div>
@@ -26,255 +29,196 @@
             <!-- LEFT: Details -->
             <div class="col-12 col-lg-7">
 
-                <!-- Order Items -->
+                <!-- Cart Items Section -->
+                @if (Model.OrderItems.Any())
+                {
+                    <div class="card-box">
+                        <h6><i class="bi bi-bag" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Cart Items (@Model.OrderItems.Count)</h6>
+                        
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <div class="product-line">
+                                <div class="prod-img">
+                                    @if (!string.IsNullOrEmpty(item.ProductImage))
+                                    {
+                                        <img src="@item.ProductImage" alt="@item.ProductName" style="width:60px;height:60px;object-fit:cover;border-radius:4px;">
+                                    }
+                                    else
+                                    {
+                                        <div style="width:60px;height:60px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                                            <i class="bi bi-image" style="font-size:1.5rem;color:#ccc;"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="prod-name">@item.ProductName</div>
+                                    <div class="prod-meta">Qty: @item.Quantity &nbsp;|&nbsp; ₹@item.UnitPrice.ToString("F2")</div>
+                                </div>
+                                <div class="text-end">
+                                    <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;">₹@item.TotalPrice.ToString("F2")</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Buy Now Product Section (If exists) -->
+                @if (Model.BuyNowProduct != null)
+                {
+                    <div class="card-box" style="border-left: 4px solid #ff6b35;">
+                        <h6><i class="bi bi-lightning-charge" style="color:#ff6b35;margin-right:6px;font-size:0.9rem;"></i>Buy Now Product</h6>
+                        
+                        <div class="product-line" style="background:#fff9f5;padding:12px;border-radius:6px;">
+                            <div class="prod-img">
+                                @if (!string.IsNullOrEmpty(Model.BuyNowProduct.ProductImage))
+                                {
+                                    <img src="@Model.BuyNowProduct.ProductImage" alt="@Model.BuyNowProduct.ProductName" style="width:60px;height:60px;object-fit:cover;border-radius:4px;">
+                                }
+                                else
+                                {
+                                    <div style="width:60px;height:60px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                                        <i class="bi bi-image" style="font-size:1.5rem;color:#ccc;"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="prod-name">@Model.BuyNowProduct.ProductName</div>
+                                <div class="prod-meta">Qty: @Model.BuyNowProduct.Quantity &nbsp;|&nbsp; ₹@Model.BuyNowProduct.UnitPrice.ToString("F2")</div>
+                                <span class="badge bg-warning" style="font-size:0.7rem;margin-top:6px;">New Item</span>
+                            </div>
+                            <div class="text-end">
+                                <div style="font-size:0.95rem;font-weight:700;color:#ff6b35;">₹@Model.BuyNowProduct.TotalPrice.ToString("F2")</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Delivery Address Section -->
                 <div class="card-box">
-                    <h6><i class="bi bi-bag" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Order items (3)</h6>
-                    <div class="product-line">
-                        <div class="prod-img">📱</div>
-                        <div class="flex-grow-1">
-                            <div class="prod-name">Redmi Note 13 Pro (8GB/256GB)</div>
-                            <div class="prod-meta">Color: Midnight Black &nbsp;|&nbsp; Seller: TechZone</div>
-                            <div class="qty-ctrl mt-2">
-                                <button class="qty-btn" onclick="changeQty('q1',-1)">-</button>
-                                <span class="qty-val" id="q1">1</span>
-                                <button class="qty-btn" onclick="changeQty('q1',1)">+</button>
-                            </div>
+                    <h6><i class="bi bi-geo-alt" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Delivery Address</h6>
+                    @if (Model.UserAddresses.Any())
+                    {
+                        <div style="display:grid;gap:12px;">
+                            @foreach (var address in Model.UserAddresses)
+                            {
+                                <label class="address-radio">
+                                    <input type="radio" name="selectedAddress" value="@address.Id" @(address.Id == Model.UserAddresses.First().Id ? "checked" : "")>
+                                    <div class="address-box">
+                                        <div style="font-weight:600;color:#1a1f36;">@address.AddressType</div>
+                                        <div style="font-size:0.9rem;color:#4a5272;margin-top:4px;">
+                                            @address.Address, @address.City, @address.State - @address.PinCode
+                                        </div>
+                                        <div style="font-size:0.85rem;color:#8a93b2;margin-top:4px;">📞 @address.ContactNumber</div>
+                                    </div>
+                                </label>
+                            }
                         </div>
-                        <div class="text-end">
-                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p1">₹18,499</div>
-                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹22,999</div>
-                            <button class="del-btn mt-1" onclick="removeItem('item1')"><i class="bi bi-trash3"></i></button>
+                    }
+                    else
+                    {
+                        <div style="padding:16px;background:#f5f7fa;border-radius:6px;color:#8a93b2;text-align:center;">
+                            No addresses saved. Please add an address in your profile.
                         </div>
-                    </div>
-                    <div class="product-line" id="item2">
-                        <div class="prod-img">🎧</div>
-                        <div class="flex-grow-1">
-                            <div class="prod-name">Noise Earbuds Pro X</div>
-                            <div class="prod-meta">Color: White &nbsp;|&nbsp; Seller: AudioWorld</div>
-                            <div class="qty-ctrl mt-2">
-                                <button class="qty-btn" onclick="changeQty('q2',-1)">-</button>
-                                <span class="qty-val" id="q2">1</span>
-                                <button class="qty-btn" onclick="changeQty('q2',1)">+</button>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p2">₹2,499</div>
-                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹3,999</div>
-                            <button class="del-btn mt-1" onclick="removeItem('item2')"><i class="bi bi-trash3"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-line" id="item3">
-                        <div class="prod-img">👟</div>
-                        <div class="flex-grow-1">
-                            <div class="prod-name">Nike Air Max 270 (Size 9)</div>
-                            <div class="prod-meta">Color: Black/White &nbsp;|&nbsp; Seller: SportsHub</div>
-                            <div class="qty-ctrl mt-2">
-                                <button class="qty-btn" onclick="changeQty('q3',-1)">-</button>
-                                <span class="qty-val" id="q3">1</span>
-                                <button class="qty-btn" onclick="changeQty('q3',1)">+</button>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p3">₹8,995</div>
-                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹10,995</div>
-                            <button class="del-btn mt-1" onclick="removeItem('item3')"><i class="bi bi-trash3"></i></button>
-                        </div>
-                    </div>
+                    }
                 </div>
 
-                <!-- Carts Items -->
+                <!-- Payment Method Section -->
                 <div class="card-box">
-                    <h6><i class="bi bi-bag" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Order items (3)</h6>
-                    <div class="product-line">
-                        <div class="prod-img">📱</div>
-                        <div class="flex-grow-1">
-                            <div class="prod-name">Redmi Note 13 Pro (8GB/256GB)</div>
-                            <div class="prod-meta">Color: Midnight Black &nbsp;|&nbsp; Seller: TechZone</div>
-                            <div class="qty-ctrl mt-2">
-                                <button class="qty-btn" onclick="changeQty('q1',-1)">-</button>
-                                <span class="qty-val" id="q1">1</span>
-                                <button class="qty-btn" onclick="changeQty('q1',1)">+</button>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p1">₹18,499</div>
-                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹22,999</div>
-                            <button class="del-btn mt-1" onclick="removeItem('item1')"><i class="bi bi-trash3"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-line" id="item2">
-                        <div class="prod-img">🎧</div>
-                        <div class="flex-grow-1">
-                            <div class="prod-name">Noise Earbuds Pro X</div>
-                            <div class="prod-meta">Color: White &nbsp;|&nbsp; Seller: AudioWorld</div>
-                            <div class="qty-ctrl mt-2">
-                                <button class="qty-btn" onclick="changeQty('q2',-1)">-</button>
-                                <span class="qty-val" id="q2">1</span>
-                                <button class="qty-btn" onclick="changeQty('q2',1)">+</button>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p2">₹2,499</div>
-                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹3,999</div>
-                            <button class="del-btn mt-1" onclick="removeItem('item2')"><i class="bi bi-trash3"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-line" id="item3">
-                        <div class="prod-img">👟</div>
-                        <div class="flex-grow-1">
-                            <div class="prod-name">Nike Air Max 270 (Size 9)</div>
-                            <div class="prod-meta">Color: Black/White &nbsp;|&nbsp; Seller: SportsHub</div>
-                            <div class="qty-ctrl mt-2">
-                                <button class="qty-btn" onclick="changeQty('q3',-1)">-</button>
-                                <span class="qty-val" id="q3">1</span>
-                                <button class="qty-btn" onclick="changeQty('q3',1)">+</button>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <div style="font-size:0.95rem;font-weight:700;color:#1a1f36;" id="p3">₹8,995</div>
-                            <div style="font-size:0.75rem;color:#8a93b2;text-decoration:line-through;">₹10,995</div>
-                            <button class="del-btn mt-1" onclick="removeItem('item3')"><i class="bi bi-trash3"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Delivery Address -->
-                <div class="card-box">
-                    <h6><i class="bi bi-geo-alt" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Delivery address</h6>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="form-label-sm">First name</div>
-                            <input class="input-sm-box" type="text" placeholder="Santosh" value="Santosh">
-                        </div>
-                        <div class="col-6">
-                            <div class="form-label-sm">Last name</div>
-                            <input class="input-sm-box" type="text" placeholder="Arora" value="Arora">
-                        </div>
-                        <div class="col-12">
-                            <div class="form-label-sm">Mobile number</div>
-                            <input class="input-sm-box" type="text" placeholder="+91 98765 43210" value="+91 98765 43210">
-                        </div>
-                        <div class="col-12">
-                            <div class="form-label-sm">Address line 1</div>
-                            <input class="input-sm-box" type="text" placeholder="House no., Street name" value="12, Gandhi Nagar, Main Road">
-                        </div>
-                        <div class="col-12">
-                            <div class="form-label-sm">Address line 2 (optional)</div>
-                            <input class="input-sm-box" type="text" placeholder="Apartment, landmark, etc.">
-                        </div>
-                        <div class="col-4">
-                            <div class="form-label-sm">PIN code</div>
-                            <input class="input-sm-box" type="text" placeholder="800001" value="800001">
-                        </div>
-                        <div class="col-4">
-                            <div class="form-label-sm">City</div>
-                            <input class="input-sm-box" type="text" placeholder="City" value="Patna">
-                        </div>
-                        <div class="col-4">
-                            <div class="form-label-sm">State</div>
-                            <input class="input-sm-box" type="text" placeholder="State" value="Bihar">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Payment Method -->
-                <div class="card-box">
-                    <h6><i class="bi bi-credit-card" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Payment method</h6>
-                    <div class="d-flex flex-column gap-2">
-                        <div class="radio-card selected" onclick="selectPay(this)">
-                            <input type="radio" name="pay" checked style="accent-color:#6c8af7;">
-                            <div class="pay-icon" style="background:#eef0ff;color:#3c3489;font-size:0.65rem;">UPI</div>
-                            <div>
-                                <div style="font-size:0.85rem;font-weight:600;color:#1a1f36;">UPI (GPay / PhonePe / Paytm)</div>
-                                <div style="font-size:0.72rem;color:#8a93b2;">Instant payment, no extra charges</div>
-                            </div>
-                            <span class="badge-offer ms-auto">5% off</span>
-                        </div>
-                        <div class="radio-card" onclick="selectPay(this)">
-                            <input type="radio" name="pay" style="accent-color:#6c8af7;">
-                            <div class="pay-icon" style="background:#fff4e6;color:#854f0b;font-size:0.6rem;">CARD</div>
-                            <div>
-                                <div style="font-size:0.85rem;font-weight:600;color:#1a1f36;">Credit / Debit Card</div>
-                                <div style="font-size:0.72rem;color:#8a93b2;">Visa, Mastercard, RuPay accepted</div>
-                            </div>
-                        </div>
-                        <div class="radio-card" onclick="selectPay(this)">
-                            <input type="radio" name="pay" style="accent-color:#6c8af7;">
-                            <div class="pay-icon" style="background:#e6f9f0;color:#085041;font-size:0.6rem;">EMI</div>
-                            <div>
-                                <div style="font-size:0.85rem;font-weight:600;color:#1a1f36;">No-Cost EMI</div>
-                                <div style="font-size:0.72rem;color:#8a93b2;">From ₹1,083/month · 0% interest</div>
-                            </div>
-                        </div>
-                        <div class="radio-card" onclick="selectPay(this)">
-                            <input type="radio" name="pay" style="accent-color:#6c8af7;">
-                            <div class="pay-icon" style="background:#fdecea;color:#791f1f;font-size:0.6rem;">COD</div>
-                            <div>
-                                <div style="font-size:0.85rem;font-weight:600;color:#1a1f36;">Cash on Delivery</div>
-                                <div style="font-size:0.72rem;color:#8a93b2;">Pay when your order arrives</div>
-                            </div>
-                        </div>
+                    <h6><i class="bi bi-credit-card" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Payment Method</h6>
+                    <div style="display:grid;gap:10px;">
+                        <label class="payment-radio">
+                            <input type="radio" name="paymentMethod" value="UPI" checked>
+                            <span><i class="bi bi-phone"></i> UPI</span>
+                        </label>
+                        <label class="payment-radio">
+                            <input type="radio" name="paymentMethod" value="Card">
+                            <span><i class="bi bi-credit-card"></i> Debit/Credit Card</span>
+                        </label>
+                        <label class="payment-radio">
+                            <input type="radio" name="paymentMethod" value="COD">
+                            <span><i class="bi bi-cash-coin"></i> Cash on Delivery</span>
+                        </label>
                     </div>
                 </div>
 
             </div>
 
-            <!-- RIGHT: Summary -->
+            <!-- RIGHT: Price Summary -->
             <div class="col-12 col-lg-5">
-                <div style="position:sticky;top:16px;">
-
-                    <!-- Coupon -->
-                    <div class="card-box">
-                        <h6><i class="bi bi-tag" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Apply coupon</h6>
-                        <div class="coupon-wrap">
-                            <input class="input-sm-box" type="text" placeholder="Enter coupon code" id="couponInput">
-                            <button onclick="applyCoupon()" style="background:#6c8af7;color:#fff;border:none;border-radius:8px;padding:0 16px;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;">Apply</button>
-                        </div>
-                        <div id="couponMsg" style="font-size:0.76rem;margin-top:6px;display:none;"></div>
-                        <div class="mt-2 d-flex gap-2 flex-wrap">
-                            <span class="badge-offer" style="cursor:pointer;" onclick="document.getElementById('couponInput').value='SAVE10'">SAVE10</span>
-                            <span class="badge-offer" style="cursor:pointer;" onclick="document.getElementById('couponInput').value='FIRST50'">FIRST50</span>
-                            <span class="badge-offer" style="cursor:pointer;" onclick="document.getElementById('couponInput').value='UPI5'">UPI5</span>
-                        </div>
+                <div class="card-box sticky-top" style="top:20px;">
+                    <h6 style="margin-bottom:16px;"><i class="bi bi-calculator" style="color:#6c8af7;margin-right:6px;"></i>Price Summary</h6>
+                    
+                    <div class="price-row">
+                        <span>Subtotal</span>
+                        <span>₹@Model.TotalAmount.ToString("F2")</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Discount (20%)</span>
+                        <span style="color:#1a9e5f;">-₹@Model.DiscountAmount.ToString("F2")</span>
+                    </div>
+                    <div class="price-row">
+                        <span>GST (18%)</span>
+                        <span>₹@Model.GSTAmount.ToString("F2")</span>
+                    </div>
+                    <div class="price-row" style="border-top:2px solid #f0f2f5;padding-top:12px;margin-top:12px;font-weight:700;font-size:1.1rem;color:#1a1f36;">
+                        <span>Total Amount</span>
+                        <span>₹@Model.FinalAmount.ToString("F2")</span>
                     </div>
 
-                    <!-- Price Summary -->
-                    <div class="card-box">
-                        <h6><i class="bi bi-receipt" style="color:#6c8af7;margin-right:6px;font-size:0.9rem;"></i>Price summary</h6>
-                        <div class="savings-bar">
-                            <i class="bi bi-lightning-charge-fill" style="font-size:0.9rem;"></i>
-                            You are saving <span id="savingsAmt" style="margin-left:4px;">₹7,999</span> on this order!
-                        </div>
-                        <div class="summary-row"><span>Items (3)</span><span id="subtotal">₹29,993</span></div>
-                        <div class="summary-row"><span>Discount</span><span style="color:#1a9e5f;" id="discount">-₹7,999</span></div>
-                        <div class="summary-row"><span>Delivery charges</span><span id="delivery"><span class="badge-free">FREE</span></span></div>
-                        <div class="summary-row"><span>GST (18%)</span><span id="gst">₹3,959</span></div>
-                        <div class="summary-row" id="couponRow" style="display:none;"><span>Coupon discount</span><span style="color:#1a9e5f;" id="couponDiscount">-₹0</span></div>
-                        <div class="summary-row total"><span>Total payable</span><span id="totalAmt">₹25,953</span></div>
-                        <button class="place-btn mt-3" onclick="placeOrder()">
-                            <i class="bi bi-lock-fill" style="font-size:0.85rem;margin-right:6px;"></i>Place order &nbsp;&#8250;
+                    <!-- Coupon Section -->
+                    <div style="margin-top:16px;">
+                        <input type="text" placeholder="Enter coupon code" class="form-control form-control-sm" id="couponCode" style="margin-bottom:8px;">
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="applyCoupon()">Apply Coupon</button>
+                    </div>
+
+                    <!-- Place Order Form -->
+                    <form method="post" action="@Url.Action("PlaceOrder", "Order")" style="margin-top:20px;">
+                        <input type="hidden" name="paymentMethod" id="paymentMethodInput" value="UPI">
+                        <input type="hidden" name="couponCode" id="couponCodeInput" value="">
+                        
+                        <button type="submit" class="btn btn-primary w-100" style="height:48px;font-weight:600;">
+                            <i class="bi bi-check-circle"></i> Place Order
                         </button>
-                        <div class="secure-note">
-                            <i class="bi bi-shield-check" style="color:#1a9e5f;font-size:0.85rem;"></i>
-                            100% secure payments &nbsp;·&nbsp; Easy 7-day returns
-                        </div>
-                    </div>
+                    </form>
 
-                    <!-- Delivery Info -->
-                    <div class="card-box">
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <i class="bi bi-truck" style="color:#6c8af7;font-size:1rem;"></i>
-                            <span style="font-weight:600;font-size:0.85rem;color:#1a1f36;">Estimated delivery</span>
-                        </div>
-                        <div style="font-size:0.82rem;color:#4a5272;line-height:1.7;">
-                            <div><i class="bi bi-check-circle-fill" style="color:#1a9e5f;font-size:0.75rem;"></i> Redmi Note 13 — <strong>Thu, 17 Apr</strong></div>
-                            <div><i class="bi bi-check-circle-fill" style="color:#1a9e5f;font-size:0.75rem;"></i> Noise Earbuds — <strong>Fri, 18 Apr</strong></div>
-                            <div><i class="bi bi-check-circle-fill" style="color:#1a9e5f;font-size:0.75rem;"></i> Nike Shoes — <strong>Sat, 19 Apr</strong></div>
-                        </div>
-                    </div>
-
+                    <button type="button" class="btn btn-outline-secondary w-100 mt-2" onclick="history.back()">
+                        <i class="bi bi-arrow-left"></i> Continue Shopping
+                    </button>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+<style>
+    .address-radio input[type="radio"] { margin-right: 12px; }
+    .address-box { padding: 12px; border: 1px solid #e0e6ed; border-radius: 6px; }
+    .address-radio input[type="radio"]:checked + .address-box { border-color: #6c8af7; background: #f8f9ff; }
+    
+    .payment-radio input[type="radio"] { margin-right: 12px; }
+    .payment-radio span { display: inline-flex; align-items: center; gap: 8px; }
+    .payment-radio input[type="radio"]:checked + span { color: #6c8af7; font-weight: 600; }
+    
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 12px; color: #4a5272; }
+    .card-box { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .product-line { display: grid; grid-template-columns: 60px 1fr auto; gap: 16px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; align-items: center; }
+    .product-line:last-child { border-bottom: none; }
+    .prod-name { font-weight: 600; color: #1a1f36; }
+    .prod-meta { font-size: 0.85rem; color: #8a93b2; }
+</style>
+
+<script>
+    // Update payment method on form submission
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('paymentMethodInput').value = this.value;
+        });
+    });
+
+    function applyCoupon() {
+        const couponCode = document.getElementById('couponCode').value;
+        document.getElementById('couponCodeInput').value = couponCode;
+        alert('Coupon "' + couponCode + '" applied!');
+    }
+</script>

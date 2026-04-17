@@ -52,35 +52,38 @@ namespace ECartApp.Controllers
             }
 
             // Generate JWT Token
-            var tokenGenerator = new JwtTokenGenrator(_config);
-            string token = tokenGenerator.GenerateToken(user.Id, user.Email, user.Role ?? "Customer");
-
-            // Create claims for Cookie Authentication
-            var claims = new List<Claim>
+            if (user?.Email != null)
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                new Claim(ClaimTypes.Role, user.Role ?? "Customer"),
-                new Claim("JWToken", token)
-            };
+                var tokenGenerator = new JwtTokenGenrator(_config);
+                string token = tokenGenerator.GenerateToken(user.Id, user.Email, user.Role ?? "Customer");
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(15)
-            };
+                // Create claims for Cookie Authentication
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                    new Claim(ClaimTypes.Role, user.Role ?? "Customer"),
+                    new Claim("JWToken", token)
+                };
 
-            // Sign in with Cookie
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(15)
+                };
 
-            // Store in session as backup
-            HttpContext.Session.SetString("JWToken", token);
-            HttpContext.Session.SetInt32("UserId", user.Id);
+                // Sign in with Cookie
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+
+                // Store in session as backup
+                HttpContext.Session.SetString("JWToken", token);
+                HttpContext.Session.SetInt32("UserId", user.Id);
+            }
 
             return RedirectToAction("Deskboard", "Deskboard");
         }
@@ -126,7 +129,7 @@ namespace ECartApp.Controllers
             {
                 UserId = user.Id,
             };
-            await _myCartDb.userProfiles.AddAsync(userProfile);
+            await _myCartDb.userprofiles.AddAsync(userProfile);
             await _myCartDb.SaveChangesAsync();
 
             TempData["Message"] = "Registration Successful. Please login.";
